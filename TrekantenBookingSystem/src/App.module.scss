@@ -1,0 +1,60 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.machineList {
+    display: flex;
+
+    justify-content: center;
+    align-items: center; // Add this line to center items vertically
+    gap: 30px;
+    margin-top: 20px;
+
+
+
+
+    div {
+
+
+
+        h2 {
+            margin-bottom: 20px;
+            width: 240px;
+            background-color: aqua;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .buttonContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+
+            button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                width: 200px;
+                height: 50px;
+                background-color: blue;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+            }
+        }
+
+
+
+    }
+
+
+
+
+}
