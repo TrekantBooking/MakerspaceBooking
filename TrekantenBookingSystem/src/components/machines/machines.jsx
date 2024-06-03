@@ -28,10 +28,17 @@ const Machines = () => {
     }, []);
 
     const handleAddBooking = async (booking) => {
+
+        const startTime = new Date(); // Current time
+        const endTime = new Date(startTime.getTime() + selectedMachine.booking_time * 60000); // Add booking_time minutes
         const { data, error } = await supabase
             .from('bookings')
-            .insert([{ ...booking, machine_id: selectedMachine.id }]);
-
+            .insert([{
+                ...booking,
+                machine_id: selectedMachine.id,
+                start_time: startTime,
+                end_time: endTime
+            }]);
         if (error) {
             console.error('Error inserting data:', error);
         } else {
