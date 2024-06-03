@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import style from './bookings.module.scss';
 import { createClient } from '@supabase/supabase-js';
 import PropTypes from 'prop-types';
@@ -16,15 +16,44 @@ const Bookings = ({ machineId }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
 
+    const handleDeleteBooking = useCallback(async (eventOrBookingId) => {
+        let bookingId;
+        if (eventOrBookingId instanceof Event) {
+            bookingId = eventOrBookingId.target.getAttribute('data-booking-id');
+        } else {
+            bookingId = eventOrBookingId;
+        }
+
+        // Implement password verification logic here if needed
+        const { data, error } = await supabase
+            .from('bookings')
+            .delete()
+            .eq('id', bookingId);
+
+        if (error) {
+            console.error('Error deleting booking:', error);
+        } else {
+            setBookings(bookings => bookings.filter(booking => booking.id !== bookingId));
+        }
+    }, []);
+
     // Effect hook to update current time every second
     useEffect(() => {
-        const intervalId = setInterval(() => {
+        const intervalId = setInterval(async () => {
             setCurrentTime(new Date());
+
+            // Check if any bookings have ended
+            for (const booking of bookings) {
+                const endTime = new Date(booking.end_time);
+                if (endTime <= currentTime) {
+                    // If the booking has ended, delete it
+                    await handleDeleteBooking(booking.id);
+                }
+            }
         }, 1000);
 
-        // Cleanup function to clear the interval when the component unmounts
-        return () => clearInterval(intervalId);
-    }, []);
+        return () => clearInterval(intervalId); // Clear the interval when the component unmounts
+    }, [bookings, currentTime, handleDeleteBooking]);
 
 
 
@@ -44,20 +73,7 @@ const Bookings = ({ machineId }) => {
         fetchBookings();
     }, [machineId]);
 
-    const handleDeleteBooking = async ({ password, bookingId }) => {
-        // Implement password verification logic here if needed
-        const { data, error } = await supabase
-            .from('bookings')
-            .delete()
-            .eq('id', bookingId);
 
-        if (error) {
-            console.error('Error deleting booking:', error);
-        } else {
-            setShowDeleteModal(false);
-            setBookings(bookings.filter(booking => booking.id !== bookingId));
-        }
-    };
 
     const openDeleteModal = (booking) => {
         setSelectedBooking(booking);
@@ -82,7 +98,7 @@ const Bookings = ({ machineId }) => {
                             <div key={index}>
                                 <h2>{booking.user_name}</h2>
                                 <p>Remaining time: {formattedTime}</p>
-                                <button onClick={() => openDeleteModal(booking)}>Delete</button>
+                                <button data-booking-id={booking.id} onClick={() => openDeleteModal(booking)}>Delete</button>
                             </div>
                         );
                     })
@@ -93,7 +109,7 @@ const Bookings = ({ machineId }) => {
                 <DeleteModal
                     show={showDeleteModal}
                     onClose={() => setShowDeleteModal(false)}
-                    onSubmit={handleDeleteBooking}
+                    onSubmit={() => handleDeleteBooking(selectedBooking.id) && setShowDeleteModal(false)}
                     booking={selectedBooking}
                 />
             )}
