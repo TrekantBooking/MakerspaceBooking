@@ -18,7 +18,7 @@ const DeleteModal = ({ show, onClose, onSubmit, booking }) => {
                 <h2>Delete Booking for {booking.user_name}</h2>
                 <form onSubmit={handleSubmit}>
                     <label>
-                        Key:
+                        Password:
                         <input
                             type="password"
                             value={password}

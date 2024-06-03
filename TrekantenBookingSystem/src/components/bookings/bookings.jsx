@@ -27,13 +27,12 @@ const Bookings = ({ machineId, bookingTime }) => {
         fetchBookings();
     }, [machineId]);
 
-    const handleDeleteBooking = async ({ username, password, bookingId }) => {
-        // Implement user verification logic here if needed
+    const handleDeleteBooking = async ({ password, bookingId }) => {
+        // Implement password verification logic here if needed
         const { data, error } = await supabase
             .from('bookings')
             .delete()
-            .eq('id', bookingId)
-            .eq('user_name', username); // Assuming booking has 'user_name' field to match with the username
+            .eq('id', bookingId);
 
         if (error) {
             console.error('Error deleting booking:', error);
