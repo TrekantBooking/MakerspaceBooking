@@ -1,7 +1,7 @@
 .machineList {
     display: flex;
     justify-content: center;
-    align-items: center; // Add this line to center items vertically
+    align-items: flex-start; // Add this line to center items vertically
     gap: 30px;
     margin-top: 20px;
 
