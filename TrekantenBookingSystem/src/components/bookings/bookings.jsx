@@ -8,7 +8,7 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 
-const Bookings = ({ machineId }) => {
+const Bookings = ({ machineId, bookingTime }) => {
 
     const [bookings, setBookings] = useState([])
 
@@ -40,6 +40,7 @@ const Bookings = ({ machineId }) => {
                 {bookings.map((booking, index) => (
                     <div key={index} >
                         <h2>{booking.user_name}</h2> {/* Assuming each booking object has a 'name' property */}
+                        <p>{bookingTime}</p>
 
                     </div>
                 ))}
@@ -52,6 +53,7 @@ const Bookings = ({ machineId }) => {
 
 Bookings.propTypes = {
     machineId: PropTypes.string.isRequired,
+    bookingTime: PropTypes.string.isRequired
 };
 
 

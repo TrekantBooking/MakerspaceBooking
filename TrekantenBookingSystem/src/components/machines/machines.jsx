@@ -51,7 +51,7 @@ const Machines = () => {
                     <div key={index} >
                         <h2>{machine.name}</h2> {/* Assuming each machine object has a 'name' property */}
                         <div className={style.bookingList}>
-                            <Bookings machineId={machine.id} />
+                            <Bookings machineId={machine.id} bookingTime={machine.booking_time} />
                         </div>
                         <div className={style.buttonContainer}>
                             <button onClick={() => openModal(machine)}>Book</button>

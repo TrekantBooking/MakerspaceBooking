@@ -10,12 +10,17 @@
         .bookingList {
 
             div {
-                background-color: azure;
+                display: flex;
+                flex-direction: column;
+                background-color: white;
+
+
+
 
                 h2 {
                     margin-bottom: 20px;
                     width: 240px;
-                    background-color: green;
+                    background-color: white;
                     text-align: center;
                     padding: 20px;
                     border-radius: 10px;
