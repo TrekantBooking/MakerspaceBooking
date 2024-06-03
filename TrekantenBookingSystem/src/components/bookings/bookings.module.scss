@@ -1,21 +1,35 @@
 @use "../../styles/variables" as vars;
 
 .bookingList {
+  div {
+    background-color: black;
+    border: 1px solid black;
+    border-radius: 10px;
 
-    div {
-        background-color: black;
-        border: 1px solid black;
-        margin-bottom: 10px;
-
-        h2 {
-            margin-bottom: 20px;
-            width: 240px;
-            background-color: aqua;
-            text-align: center;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
+    h2 {
+      width: 240px;
+      background-color: aqua;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
     }
 
+    p {
+      background-color: #fff;
+      margin: 0;
+    }
+
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 50px;
+      background-color: blue;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  }
 }

@@ -5,34 +5,12 @@
     gap: 30px;
     margin-top: 20px;
 
-    div {
+    .machine_container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
 
-        .bookingList {
-
-            div {
-                display: flex;
-                flex-direction: column;
-                background-color: white;
-
-
-
-
-                h2 {
-                    margin-bottom: 20px;
-                    width: 240px;
-                    background-color: white;
-                    text-align: center;
-                    padding: 20px;
-                    border-radius: 10px;
-                }
-            }
-
-
-
-        }
-
-        h2 {
-            margin-bottom: 20px;
+        .machine_name {
             width: 240px;
             background-color: blue;
             text-align: center;
