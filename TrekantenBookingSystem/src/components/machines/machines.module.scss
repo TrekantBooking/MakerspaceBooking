@@ -7,10 +7,29 @@
 
     div {
 
+        .bookingList {
+
+            div {
+                background-color: azure;
+
+                h2 {
+                    margin-bottom: 20px;
+                    width: 240px;
+                    background-color: green;
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                }
+            }
+
+
+
+        }
+
         h2 {
             margin-bottom: 20px;
             width: 240px;
-            background-color: aqua;
+            background-color: blue;
             text-align: center;
             padding: 20px;
             border-radius: 10px;
