@@ -64,7 +64,8 @@ const Bookings = ({ machineId }) => {
             const { data, error } = await supabase
                 .from('bookings')
                 .select('*')
-                .eq('machine_id', machineId);
+                .eq('machine_id', machineId)
+                .order('start_time', { ascending: true }); // Sort bookings by start_time
 
             if (error) console.error('Error fetching bookings:', error);
             else setBookings(data);
