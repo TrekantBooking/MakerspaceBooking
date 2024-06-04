@@ -6,6 +6,7 @@ const Modal = ({ show, onClose, onSubmit, selectedMachine }) => {
     const [password, setPassword] = useState('');
 
     const handleSubmit = (e) => {
+        e.preventDefault();
         onSubmit({ user_name, password });
         setUser_name('');
         setPassword('');
