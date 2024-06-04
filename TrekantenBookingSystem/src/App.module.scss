@@ -1,15 +1,29 @@
 @use "styles/_variables.scss" as vars;
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: vars.$font-main;
-    font-weight: 400;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: vars.$font-main;
+  font-weight: 600;
 }
 
-h1 {
-    font-size: 2rem;
-    text-align: center;
-    margin-top: 20px;
+.heading {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin: 10px;
+
+    img {
+        width: 10%;
+    }
+
+    h1 {
+        font-size: 3rem;
+        text-transform: uppercase;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
 }
