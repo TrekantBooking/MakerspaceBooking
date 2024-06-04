@@ -83,7 +83,7 @@ const Bookings = ({ machineId }) => {
 
     return (
         <>
-            <div className={style.bookingList}>
+            <div className={style.booking_list}>
                 {
                     bookings.map((booking, index) => {
                         const endTime = new Date(booking.end_time);
@@ -96,9 +96,9 @@ const Bookings = ({ machineId }) => {
                         const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
                         return (
-                            <div key={index}>
+                            <div key={index} className={style.user_booking}>
                                 <h2>{booking.user_name}</h2>
-                                <p>Remaining time: {formattedTime}</p>
+                                <p className={style.user_time}>Remaining time: {formattedTime}</p>
                                 <button data-booking-id={booking.id} onClick={() => openDeleteModal(booking)}>Delete</button>
                             </div>
                         );
