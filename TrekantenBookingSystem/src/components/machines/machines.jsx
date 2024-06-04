@@ -70,7 +70,6 @@ const Machines = () => {
             console.error('Error inserting data:', error);
         } else {
             setShowModal(false);
-            window.location.reload()
         }
 
         // Refresh machines data to reflect new bookings
@@ -97,16 +96,16 @@ const Machines = () => {
             <div className={style.machineList}>
                 {machines.map((machine, index) => (
                     <div className={style.machine_container} key={index}>
-                        <div className={style.machine_name}>
+                        <div className={style.machine_header}>
                             <h2>{machine.name}</h2>
                         </div>
-                        <div className={style.bookingList}>
+                        <div>
                             <Bookings
                                 machineId={machine.id.toString()}
                                 bookingTime={machine.booking_time.toString()}
                             />
                         </div>
-                        <div className={style.buttonContainer}>
+                        <div className={style.bookMachine_button}>
                             <button onClick={() => openModal(machine)}>Book machine</button>
                         </div>
                     </div>
