@@ -72,7 +72,7 @@ const Bookings = ({ machineId }) => {
         };
 
         fetchBookings();
-    }, [machineId]);
+    }, [machineId, bookings]);
 
 
 

@@ -1,27 +1,15 @@
-
-import style from './App.module.scss'
-
-import Machines from './components/machines/machines'
-
-
-
-
+import style from "./App.module.scss";
+import Machines from "./components/machines/machines";
 
 function App() {
-
-
-
-
-
-
-
   return (
     <>
-      <h1>Book en maskine </h1>
+      <div className={style.}>
+        <h1>Book en maskine </h1>
+      </div>
       <Machines />
-
     </>
-  )
+  );
 }
 
-export default App
+export default App;

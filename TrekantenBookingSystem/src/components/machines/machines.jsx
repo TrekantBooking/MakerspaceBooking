@@ -70,7 +70,6 @@ const Machines = () => {
             console.error('Error inserting data:', error);
         } else {
             setShowModal(false);
-            window.location.reload()
         }
 
         // Refresh machines data to reflect new bookings
