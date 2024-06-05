@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import { createContext, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { SupabaseContext } from './SupabaseProvider';
 // Create a new context
@@ -13,17 +13,25 @@ const ContextProvider = ({ children }) => {
     const [bookings, setBookings] = useState([]);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [machines, setMachines] = useState([]);
-    const [selectedMachine, setSelectedMachine] = useState(null);
+
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [triggerFetch, setTriggerFetch] = useState(false);
 
     // Define any functions or methods you need
 
-    ////FETCH FUNCTIONS
+    //fetch machines from database
+    const fetchMachines = async () => {
+        const { data, error } = await supabase.from("machines").select("*");
 
+        if (error) {
+            console.error('Error fetching machines:', error);
+        } else {
+            setMachines(data);
 
-
+        }
+    };
 
 
 
@@ -35,10 +43,15 @@ const ContextProvider = ({ children }) => {
             bookings, setBookings,
             machines, setMachines,
             selectedBooking, setSelectedBooking,
-            selectedMachine, setSelectedMachine,
+
             showModal, setShowModal,
             showDeleteModal, setShowDeleteModal,
-            currentTime, setCurrentTime
+            currentTime, setCurrentTime,
+            fetchMachines,
+            triggerFetch, setTriggerFetch
+
+
+
         }}>
             {children}
         </MyContext.Provider>
