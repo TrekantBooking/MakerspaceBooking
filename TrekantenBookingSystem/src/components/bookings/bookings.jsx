@@ -11,12 +11,15 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Bookings = ({ machineId }) => {
 
+
+
     const { bookings, setBookings, selectedBooking, setSelectedBooking, triggerFetch } = useContext(MyContext);
 
     // State for storing bookings and current time
 
-    const [currentTime, setCurrentTime] = useState(new Date());
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+
 
     // Function to open the delete modal
     const openDeleteModal = (booking) => {
@@ -40,13 +43,14 @@ const Bookings = ({ machineId }) => {
             else setBookings(prevBookings => ({ ...prevBookings, [machineId]: data }));
         };
 
+
         // Call the fetchBookings function
         fetchBookings();
         // This effect hook runs whenever 'machineId' or 'setBookings' changes
     }, [machineId, setBookings, triggerFetch]);
 
     // Function to delete a selected booking
-    const handleDeleteBooking = async (bookingId) => {
+    const handleDeleteBooking = useCallback(async (bookingId) => {
         // Delete the booking from the 'bookings' table where 'id' equals the bookingId
         const { error } = await supabase
             .from('bookings')
@@ -66,27 +70,7 @@ const Bookings = ({ machineId }) => {
                 return updatedBookings;
             });
         }
-    };
-
-
-    // // Effect hook to update current time every second
-    // useEffect(() => {
-    //     const intervalId = setInterval(async () => {
-    //         setCurrentTime(new Date());
-
-    //         // Check if any bookings have ended
-    //         for (const booking of bookings) {
-    //             const endTime = new Date(booking.end_time);
-    //             if (endTime <= currentTime) {
-    //                 // If the booking has ended, delete it
-    //                 await handleDeleteBooking(booking.id);
-    //             }
-    //         }
-    //     }, 1000);
-
-    //     return () => clearInterval(intervalId); // Clear the interval when the component unmounts
-    // }, [bookings, currentTime, handleDeleteBooking]);
-
+    }, [machineId, setBookings]);
 
 
 
@@ -101,6 +85,7 @@ const Bookings = ({ machineId }) => {
             <div className={style.booking_list}>
                 {
                     bookings[machineId]?.map((booking, index) => {
+
 
 
                         return (
