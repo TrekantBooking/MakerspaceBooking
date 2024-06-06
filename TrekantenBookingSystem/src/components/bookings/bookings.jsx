@@ -25,8 +25,7 @@ const Bookings = ({ machineId }) => {
 
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    // State to keep track of whether the countdown is paused
-    const [isPaused, setIsPaused] = useState(false);
+
 
     // Update numBookings whenever the bookings state changes
     useEffect(() => {
@@ -66,6 +65,9 @@ const Bookings = ({ machineId }) => {
 
     // Function to delete a selected booking
     const handleDeleteBooking = useCallback(async (bookingId) => {
+        if (bookingId === null) {
+            return;
+        }
         // Delete the booking from the 'bookings' table where 'id' equals the bookingId
         const { error } = await supabase
             .from('bookings')
@@ -92,6 +94,7 @@ const Bookings = ({ machineId }) => {
 
     // Function to update the next booking in line to active
     const updateNextBookingToActive = useCallback(async () => {
+
         // Sort the bookings by their order in the queue
         const sortedBookings = [...bookings[machineId]].sort((a, b) => a.queueOrder - b.queueOrder);
 
@@ -132,7 +135,7 @@ const Bookings = ({ machineId }) => {
     useEffect(() => {
         const timer = setInterval(() => {
             setRemainingTime(prevTime => prevTime > 0 ? prevTime - 1 : 0);
-            if (remainingTime === 0) {
+            if (remainingTime === 0 && activeBookingId !== null) {
                 handleDeleteBooking(activeBookingId);
             }
         }, 1000);
@@ -171,9 +174,7 @@ const Bookings = ({ machineId }) => {
 
 
                                 }
-                                <button onClick={() => setIsPaused(prevIsPaused => !prevIsPaused)}>
-                                    {isPaused ? 'Resume' : 'Pause'}
-                                </button>
+
                                 <button data-booking-id={booking.id} onClick={() => openDeleteModal(booking)}>Delete</button>
                             </div>
                         );
