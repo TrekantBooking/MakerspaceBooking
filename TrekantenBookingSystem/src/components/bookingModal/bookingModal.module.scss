@@ -37,6 +37,9 @@
     .quantity_label {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
 
       input {
         width: 100px;
