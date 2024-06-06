@@ -25,6 +25,8 @@ const Bookings = ({ machineId }) => {
 
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    // State to keep track of whether the countdown is paused
+    const [isPaused, setIsPaused] = useState(false);
 
     // Update numBookings whenever the bookings state changes
     useEffect(() => {
@@ -135,7 +137,9 @@ const Bookings = ({ machineId }) => {
             }
         }, 1000);
         return () => clearInterval(timer);
-    }, []);
+    }, [remainingTime, handleDeleteBooking, activeBookingId]);
+
+
 
 
 
@@ -145,12 +149,6 @@ const Bookings = ({ machineId }) => {
             updateNextBookingToActive();
         }
     }, [bookings, machineId, numBookings, updateNextBookingToActive]);
-
-
-
-
-
-
 
 
 
@@ -173,7 +171,9 @@ const Bookings = ({ machineId }) => {
 
 
                                 }
-
+                                <button onClick={() => setIsPaused(prevIsPaused => !prevIsPaused)}>
+                                    {isPaused ? 'Resume' : 'Pause'}
+                                </button>
                                 <button data-booking-id={booking.id} onClick={() => openDeleteModal(booking)}>Delete</button>
                             </div>
                         );
