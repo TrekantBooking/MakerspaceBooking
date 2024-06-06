@@ -18,13 +18,11 @@ const Machines = () => {
 
     //fetch machines from database
     useEffect(() => {
-
         console.log(machines);
         fetchMachines();
     }, []);
 
     const handleAddBooking = async (booking) => {
-
         // Fetch all bookings for the selected machine
         const { data: machineBookings } = await supabase
             .from('bookings')
@@ -34,6 +32,8 @@ const Machines = () => {
         // Set the status of the new booking based on whether there are any bookings for the selected machine
         const status = machineBookings.length > 0 ? 'pending' : 'active';
 
+        // Calculate duration
+        const duration = selectedMachine.booking_time * 60 * booking.quantity;
 
         // Insert the new booking into the 'bookings' table
         const { error } = await supabase
@@ -41,7 +41,7 @@ const Machines = () => {
             .insert([{
                 ...booking,
                 machine_id: selectedMachine.id,
-                duration: selectedMachine.booking_time * 60, // convert to seconds
+                duration: duration, // duration in seconds
                 status: status
             }]);
 
@@ -54,8 +54,6 @@ const Machines = () => {
         // Close the modal
         setShowModal(false);
     };
-
-
 
     const openModal = (machine) => {
         setSelectedMachine(machine);
@@ -74,7 +72,6 @@ const Machines = () => {
                             <Bookings
                                 machineId={machine.id.toString()}
                                 bookingTime={machine.booking_time.toString()}
-
                             />
                         </div>
                         <div className={style.bookMachine_button}>
@@ -95,8 +92,5 @@ const Machines = () => {
         </>
     );
 };
-
-
-
 
 export default Machines;
