@@ -23,7 +23,10 @@ const ContextProvider = ({ children }) => {
 
     //fetch machines from database
     const fetchMachines = async () => {
-        const { data, error } = await supabase.from("machines").select("*");
+        const { data, error } = await supabase
+            .from("machines")
+            .select("*")
+            .order('id', { ascending: true }) // Order the machines by their machine_id in ascending order
 
         if (error) {
             console.error('Error fetching machines:', error);
