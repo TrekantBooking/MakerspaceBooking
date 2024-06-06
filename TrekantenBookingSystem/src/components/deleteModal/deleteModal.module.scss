@@ -8,6 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9990;
 
   .modalContent {
     position: relative;
@@ -38,25 +39,25 @@
     }
 
     .submit_button {
-        display: block;
-        margin: 0 auto;
-        background-color: #8c8d47;
-        border: none;
-        width: 75%;
-        padding: 20px 30px;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        cursor: pointer;
-  
-        &:hover {
-          background-color: #ae0404;
-        }
+      display: block;
+      margin: 0 auto;
+      background-color: #8c8d47;
+      border: none;
+      width: 75%;
+      padding: 20px 30px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #ae0404;
       }
+    }
 
     .close_button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
     }
   }
 }

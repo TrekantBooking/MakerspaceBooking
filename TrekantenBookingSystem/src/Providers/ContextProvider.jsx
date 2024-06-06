@@ -33,6 +33,13 @@ const ContextProvider = ({ children }) => {
         }
     };
 
+    //Function to format time from seconds to minutes:seconds
+    const formatDuration = (duration) => {
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    }
+
 
 
 
@@ -48,6 +55,7 @@ const ContextProvider = ({ children }) => {
             showDeleteModal, setShowDeleteModal,
             currentTime, setCurrentTime,
             fetchMachines,
+            formatDuration,
             triggerFetch, setTriggerFetch
 
 

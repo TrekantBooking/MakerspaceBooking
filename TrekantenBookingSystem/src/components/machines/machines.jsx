@@ -25,6 +25,15 @@ const Machines = () => {
 
     const handleAddBooking = async (booking) => {
 
+        // Fetch all bookings for the selected machine
+        const { data: machineBookings } = await supabase
+            .from('bookings')
+            .select()
+            .eq('machine_id', selectedMachine.id);
+
+        // Set the status of the new booking based on whether there are any bookings for the selected machine
+        const status = machineBookings.length > 0 ? 'pending' : 'active';
+
 
         // Insert the new booking into the 'bookings' table
         const { error } = await supabase
@@ -32,7 +41,8 @@ const Machines = () => {
             .insert([{
                 ...booking,
                 machine_id: selectedMachine.id,
-                duration: selectedMachine.booking_time
+                duration: selectedMachine.booking_time * 60, // convert to seconds
+                status: status
             }]);
 
         // If there's an error, log it
