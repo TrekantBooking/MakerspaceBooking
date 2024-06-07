@@ -23,6 +23,9 @@ const Bookings = ({ machineId }) => {
     // State to keep track of the id of the active booking
     const [activeBookingId, setActiveBookingId] = useState(null);
 
+    // State to keep track of all active bookings to store in local storage
+    const [activeBookings, setActiveBookings] = useState([]);
+
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -31,6 +34,8 @@ const Bookings = ({ machineId }) => {
     useEffect(() => {
         setNumBookings(bookings[machineId]?.length || 0);
     }, [bookings, machineId]);
+
+
 
 
 
@@ -122,12 +127,16 @@ const Bookings = ({ machineId }) => {
         }
     }, [machineId, setBookings, bookings]);
 
+
+
+
     // Update remainingTime and activeBookingId whenever the active booking changes
     useEffect(() => {
         const activeBooking = bookings[machineId]?.find(booking => booking.status === 'active');
         if (activeBooking && activeBooking.id !== activeBookingId) {
             setRemainingTime(activeBooking.duration);
             setActiveBookingId(activeBooking.id);
+
         }
     }, [bookings, machineId, activeBookingId]);
 
@@ -141,6 +150,32 @@ const Bookings = ({ machineId }) => {
         }, 1000);
         return () => clearInterval(timer);
     }, [remainingTime, handleDeleteBooking, activeBookingId]);
+
+    // Loop through all active bookings and store them in activeBookings as objects with id and remaining time
+    useEffect(() => {
+        // Initialize an empty array to store all active bookings
+        let allActiveBookings = [];
+
+        // Loop over all machines
+        for (let machineId in bookings) {
+            // Get active bookings for the current machine
+            const activeBookingsForMachine = bookings[machineId]?.filter(booking => booking.status === 'active')
+                .map(booking => ({ id: booking.id, machineId: machineId, duration: remainingTime }));
+
+            // Add active bookings for the current machine to all active bookings
+            allActiveBookings = [...allActiveBookings, ...activeBookingsForMachine];
+        }
+
+        // Update the state with all active bookings
+        setActiveBookings(allActiveBookings);
+    }, [bookings]);
+
+    // Store activeBookings in local storage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('activeBookings', JSON.stringify(activeBookings));
+        console.log(activeBookings);
+
+    }, [activeBookings]);
 
 
 
