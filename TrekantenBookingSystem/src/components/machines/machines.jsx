@@ -23,37 +23,30 @@ const Machines = () => {
     }, []);
 
     const handleAddBooking = async (booking) => {
-        // Fetch all bookings for the selected machine
         const { data: machineBookings } = await supabase
             .from('bookings')
             .select()
             .eq('machine_id', selectedMachine.id);
-
-        // Set the status of the new booking based on whether there are any bookings for the selected machine
-        const status = machineBookings.length > 0 ? 'pending' : 'active';
-
-        // Calculate duration
+    
+        const status = machineBookings.length > 1 ? 'pending' : 'active'; // Change this line
+    
         const duration = selectedMachine.booking_time * 60 * booking.quantity;
-
-        // Insert the new booking into the 'bookings' table
+    
         const { error } = await supabase
             .from('bookings')
             .insert([{
                 ...booking,
                 machine_id: selectedMachine.id,
-                duration: duration, // duration in seconds
+                duration: duration,
                 status: status
             }]);
-
-        // If there's an error, log it
+    
         if (error) console.error('Error creating booking:', error);
-
-        // Trigger a fetch after adding a booking
+    
         setTriggerFetch(prevState => !prevState);
-
-        // Close the modal
+    
         setShowModal(false);
-    };
+    };    
 
     const openModal = (machine) => {
         setSelectedMachine(machine);

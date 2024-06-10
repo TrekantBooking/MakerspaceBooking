@@ -10,103 +10,68 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const Bookings = ({ machineId }) => {
-
-
-
     const { bookings, setBookings, selectedBooking, setSelectedBooking, triggerFetch, formatDuration } = useContext(MyContext);
 
-    // State for storing bookings and current time
-    // State to keep track of the number of bookings
     const [numBookings, setNumBookings] = useState(bookings[machineId]?.length || 0);
-    // State to keep track of the remaining time
     const [remainingTime, setRemainingTime] = useState(null);
-    // State to keep track of the id of the active booking
     const [activeBookingId, setActiveBookingId] = useState(null);
-
-    // State to keep track of all active bookings to store in local storage
-    const [activeBookings, setActiveBookings] = useState([]);
-
-
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-
-    // Update numBookings whenever the bookings state changes
     useEffect(() => {
         setNumBookings(bookings[machineId]?.length || 0);
     }, [bookings, machineId]);
 
-
-
-
-
-    // Function to open the delete modal
     const openDeleteModal = (booking) => {
         setSelectedBooking(booking);
         setShowDeleteModal(true);
     };
 
-    // Fetch bookings for the machine
     useEffect(() => {
         const fetchBookings = async () => {
-            // Fetch all bookings from the 'bookings' table where 'machine_id' equals the current machineId
             const { data, error } = await supabase
                 .from('bookings')
                 .select('*')
                 .eq('machine_id', machineId)
-                .order('created_at', { ascending: true }) // Order the bookings by their creation date (oldest first
+                .order('created_at', { ascending: true });
 
-
-            // If there's an error, log it
-            // Otherwise, update the 'bookings' state with the fetched data
             if (error) console.error('Error fetching bookings:', error);
-            else setBookings(prevBookings => ({ ...prevBookings, [machineId]: data }));
+            else {
+                // Ensure only one booking is marked as active
+                const sortedBookings = data.map((booking, index) => ({
+                    ...booking,
+                    status: index === 0 ? 'active' : 'pending'
+                }));
+                setBookings(prevBookings => ({ ...prevBookings, [machineId]: sortedBookings }));
+            }
         };
 
-
-        // Call the fetchBookings function
         fetchBookings();
-        // This effect hook runs whenever 'machineId' or 'setBookings' changes
     }, [machineId, setBookings, triggerFetch]);
 
-    // Function to delete a selected booking
     const handleDeleteBooking = useCallback(async (bookingId) => {
         if (bookingId === null) {
             return;
         }
-        // Delete the booking from the 'bookings' table where 'id' equals the bookingId
         const { error } = await supabase
             .from('bookings')
             .delete()
             .eq('id', bookingId);
 
-        // If there's an error, log it
-        // Otherwise, update the 'bookings' state by removing the deleted booking
         if (error) console.error('Error deleting booking:', error);
         else {
             setBookings(prevBookings => {
-                // Create a copy of the previous bookings
                 const updatedBookings = { ...prevBookings };
-                // Filter out the deleted booking
                 updatedBookings[machineId] = updatedBookings[machineId].filter(booking => booking.id !== bookingId);
-                // Return the updated bookings
                 return updatedBookings;
             });
-
-            // After deleting the booking, update the next booking in line to active
-            updateNextBookingToActive();
+            updateNextBookingToActive(); // Update the next booking to be active
         }
     }, [machineId, setBookings]);
 
-    // Function to update the next booking in line to active
     const updateNextBookingToActive = useCallback(async () => {
-
-        // Sort the bookings by their order in the queue
         const sortedBookings = [...bookings[machineId]].sort((a, b) => a.queueOrder - b.queueOrder);
-
-        // Get the next booking in line
         const nextBooking = sortedBookings[0];
 
-        // If there's a next booking, update its status to active
         if (nextBooking) {
             const { error } = await supabase
                 .from('bookings')
@@ -127,96 +92,77 @@ const Bookings = ({ machineId }) => {
         }
     }, [machineId, setBookings, bookings]);
 
-
-
-
-    // Update remainingTime and activeBookingId whenever the active booking changes
     useEffect(() => {
         const activeBooking = bookings[machineId]?.find(booking => booking.status === 'active');
         if (activeBooking && activeBooking.id !== activeBookingId) {
             setRemainingTime(activeBooking.duration);
             setActiveBookingId(activeBooking.id);
-
         }
     }, [bookings, machineId, activeBookingId]);
 
-    // Timer to count down the remaining time
     useEffect(() => {
+        const updateRemainingTimeInDb = async (bookingId, newRemainingTime) => {
+            const { error } = await supabase
+                .from('bookings')
+                .update({ duration: newRemainingTime })
+                .eq('id', bookingId);
+
+            if (error) console.error('Error updating booking duration:', error);
+        };
+
         const timer = setInterval(() => {
-            setRemainingTime(prevTime => prevTime > 0 ? prevTime - 1 : 0);
-            if (remainingTime === 0 && activeBookingId !== null) {
-                handleDeleteBooking(activeBookingId);
+            if (remainingTime > 0 && numBookings >= 1) {
+                setRemainingTime(prevTime => {
+                    const newTime = prevTime > 0 ? prevTime - 1 : 0;
+                    if (newTime % 10 === 0) {
+                        updateRemainingTimeInDb(activeBookingId, newTime);
+                    }
+                    return newTime;
+                });
+                if (remainingTime === 0 && activeBookingId !== null) {
+                    handleDeleteBooking(activeBookingId);
+                }
             }
         }, 1000);
         return () => clearInterval(timer);
-    }, [remainingTime, handleDeleteBooking, activeBookingId]);
+    }, [remainingTime, handleDeleteBooking, activeBookingId, numBookings]);
 
-    // Loop through all active bookings and store them in activeBookings as objects with id and remaining time
-    useEffect(() => {
-        // Initialize an empty array to store all active bookings
-        let allActiveBookings = [];
-
-        // Loop over all machines
-        for (let machineId in bookings) {
-            // Get active bookings for the current machine
-            const activeBookingsForMachine = bookings[machineId]?.filter(booking => booking.status === 'active')
-                .map(booking => ({ id: booking.id, machineId: machineId, duration: remainingTime }));
-
-            // Add active bookings for the current machine to all active bookings
-            allActiveBookings = [...allActiveBookings, ...activeBookingsForMachine];
-        }
-
-        // Update the state with all active bookings
-        setActiveBookings(allActiveBookings);
-    }, [bookings]);
-
-    // Store activeBookings in local storage whenever it changes
-    useEffect(() => {
-        localStorage.setItem('activeBookings', JSON.stringify(activeBookings));
-        console.log(activeBookings);
-
-    }, [activeBookings]);
-
-
-
-
-
-    // Call updateNextBookingToActive whenever a booking is deleted
     useEffect(() => {
         if (bookings[machineId]?.length < numBookings) {
             updateNextBookingToActive();
         }
     }, [bookings, machineId, numBookings, updateNextBookingToActive]);
 
-
+    // Watch for changes in bookings[machineId] and update the remaining time accordingly
+    useEffect(() => {
+        if (bookings[machineId]?.length > 0) {
+            const activeBooking = bookings[machineId]?.find(booking => booking.status === 'active');
+            if (activeBooking) {
+                setRemainingTime(activeBooking.duration);
+                setActiveBookingId(activeBooking.id);
+            }
+        } else {
+            // Reset remaining time and active booking ID if there are no bookings
+            setRemainingTime(null);
+            setActiveBookingId(null);
+        }
+    }, [bookings[machineId]]);
 
     return (
         <>
             <div className={style.booking_list}>
-                {
-                    bookings[machineId]?.map((booking, index) => {
-
-
-
-                        return (
-                            <div key={index} className={style.user_booking}>
-                                <h2>{booking.user_name}</h2>
-                                {
-                                    booking.status === 'active' ?
-                                        <p>Time remaining: {formatDuration(remainingTime)}</p> :
-                                        <p>I kø</p>
-
-
-
-                                }
-
-                                <button data-booking-id={booking.id} onClick={() => openDeleteModal(booking)}>Delete</button>
-                            </div>
-                        );
-                    })
-                }
-            </div >
-
+                {bookings[machineId]?.map((booking, index) => (
+                    <div key={index} className={style.user_booking}>
+                        <h2>{booking.user_name}</h2>
+                        {booking.status === 'active' ? (
+                            <p>Time remaining: {numBookings > 1 ? formatDuration(remainingTime) : formatDuration(booking.duration)}</p>
+                        ) : (
+                            <p>{numBookings > 1 ? 'In queue' : formatDuration(booking.duration)}</p>
+                        )}
+                        <button data-booking-id={booking.id} onClick={() => openDeleteModal(booking)}>Delete</button>
+                    </div>
+                ))}
+            </div>
             {selectedBooking && (
                 <DeleteModal
                     show={showDeleteModal}
