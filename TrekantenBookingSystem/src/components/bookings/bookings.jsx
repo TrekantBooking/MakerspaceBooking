@@ -123,6 +123,9 @@ const Bookings = ({ machineId }) => {
     if (activeBooking && activeBooking.id !== activeBookingId) {
       setActiveBookingRemainingTime(activeBooking.duration);
       setActiveBookingId(activeBooking.id);
+    } else if (!activeBooking && activeBookingId !== null) {
+      setActiveBookingRemainingTime(null);
+      setActiveBookingId(null);
     }
   }, [bookings, machineId, activeBookingId]);
 
@@ -137,23 +140,27 @@ const Bookings = ({ machineId }) => {
     };
 
     const timer = setInterval(() => {
-      if (activeBookingRemainingTime > 0) {
+      if (activeBookingRemainingTime > 0 && numBookings > 1) {
         setActiveBookingRemainingTime((prevTime) => {
           const newTime = prevTime > 0 ? prevTime - 1 : 0;
-          if (newTime % 10 === 0) {
+          if (newTime % 1 === 0) {
             updateRemainingTimeInDb(activeBookingId, newTime);
           }
           return newTime;
         });
-      } else {
-        if (activeBookingId !== null) {
-          handleDeleteBooking(activeBookingId);
-        }
-        clearInterval(timer); // Stop the timer when remaining time reaches 0
+      } else if (activeBookingRemainingTime === 0 && activeBookingId !== null) {
+        handleDeleteBooking(activeBookingId);
+        setActiveBookingRemainingTime(null);
+        setActiveBookingId(null);
       }
     }, 1000);
     return () => clearInterval(timer);
-  }, [activeBookingRemainingTime, handleDeleteBooking, activeBookingId]);
+  }, [
+    activeBookingRemainingTime,
+    handleDeleteBooking,
+    activeBookingId,
+    numBookings,
+  ]);
 
   return (
     <>
@@ -161,12 +168,9 @@ const Bookings = ({ machineId }) => {
         {bookings[machineId]?.map((booking, index) => (
           <div key={index} className={style.user_booking}>
             <h2>{booking.user_name}</h2>
-            {booking.status === "active" ? (
+            {booking.status === "active" && numBookings > 1 ? (
               <p>
-                Time remaining:{" "}
-                {numBookings > 1
-                  ? formatDuration(activeBookingRemainingTime)
-                  : formatDuration(booking.duration)}
+                Time remaining: {formatDuration(activeBookingRemainingTime)}
               </p>
             ) : (
               <p>
