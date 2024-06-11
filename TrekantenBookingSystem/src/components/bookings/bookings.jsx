@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import PropTypes from "prop-types";
 import DeleteModal from "../deleteModal/deleteModal";
 import { MyContext } from "../../Providers/ContextProvider";
+import { FaRegTrashCan } from "react-icons/fa6";
 
 const supabaseUrl = "https://kakelsuvivlhklklbwpy.supabase.co";
 const supabaseKey =
@@ -179,12 +180,16 @@ const Bookings = ({ machineId }) => {
                   : formatDuration(booking.duration)}
               </p>
             )}
-            <button
-              data-booking-id={booking.id}
-              onClick={() => openDeleteModal(booking)}
-            >
-              Delete
-            </button>
+            <div className={style.booking_buttons}>
+              <button
+                data-booking-id={booking.id}
+                onClick={() => openDeleteModal(booking)}
+              >
+                <span>
+                  <FaRegTrashCan />
+                </span>
+              </button>
+            </div>
           </div>
         ))}
       </div>

@@ -60,6 +60,7 @@ const Machines = () => {
                     <div className={style.machine_container} key={index}>
                         <div className={style.machine_header}>
                             <h2>{machine.name}</h2>
+                            <h3>{machine.function}</h3>
                         </div>
                         <div>
                             <Bookings

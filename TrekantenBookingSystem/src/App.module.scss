@@ -12,17 +12,18 @@
     display: flex;
     align-items: center;
     position: relative;
-    margin: 10px;
+    margin: 50px;
 
     img {
         width: 10%;
     }
 
     h1 {
-        font-size: 3rem;
+        font-size: 4vw;
         text-transform: uppercase;
         position: absolute;
-        left: 50%;
+        color: #00AEEF;
+        left: 50%;  
         top: 50%;
         transform: translate(-50%, -50%);
     }
