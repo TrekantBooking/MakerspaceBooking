@@ -166,32 +166,41 @@ const Bookings = ({ machineId }) => {
   return (
     <>
       <div className={style.booking_list}>
-        {bookings[machineId]?.map((booking, index) => (
-          <div key={index} className={style.user_booking}>
-            <h2>{booking.user_name}</h2>
-            {booking.status === "active" && numBookings > 1 ? (
-              <p>
-                Time remaining: {formatDuration(activeBookingRemainingTime)}
-              </p>
-            ) : (
-              <p>
-                {numBookings > 1
-                  ? "In queue"
-                  : formatDuration(booking.duration)}
-              </p>
-            )}
+        {bookings[machineId]?.length > 0 ? (
+          <div className={style.user_booking}>
+            <h2>{bookings[machineId][0].user_name}</h2>
+            <p>Time remaining: {formatDuration(activeBookingRemainingTime)}</p>
             <div className={style.booking_buttons}>
-              <button
-                data-booking-id={booking.id}
-                onClick={() => openDeleteModal(booking)}
-              >
-                <span>
-                  <FaRegTrashCan />
-                </span>
-              </button>
+            <button
+              data-booking-id={bookings[machineId][0].id}
+              onClick={() => openDeleteModal(bookings[machineId][0])}
+            >
+              <FaRegTrashCan />
+            </button>
             </div>
           </div>
-        ))}
+        ) : (
+          <div className={style.user_booking}>
+            <h2>No active bookings</h2>
+          </div>
+        )}
+        {bookings[machineId]?.length > 1 ? (
+          <div className={style.user_booking}>
+            <h3>{bookings[machineId].length - 1} people in queue</h3>
+            <p>
+              Total queue time:{" "}
+              {formatDuration(
+                bookings[machineId]
+                  .slice(1)
+                  .reduce((total, booking) => total + booking.duration, 0)
+              )}
+            </p>
+          </div>
+        ) : (
+          <div className={style.user_booking}>
+            <h2>No people in queue</h2>
+          </div>
+        )}
       </div>
       {selectedBooking && (
         <DeleteModal
