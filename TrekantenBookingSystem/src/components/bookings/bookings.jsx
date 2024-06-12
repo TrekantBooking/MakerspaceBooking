@@ -25,6 +25,7 @@ const Bookings = ({ machineId }) => {
     bookings[machineId]?.length || 0
   );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [activeBookingRemainingTime, setActiveBookingRemainingTime] =
     useState(null);
@@ -39,30 +40,51 @@ const Bookings = ({ machineId }) => {
     setShowDeleteModal(true);
   };
 
-  useEffect(() => {
-    const fetchBookings = async () => {
-      const { data, error } = await supabase
-        .from("bookings")
-        .select("*")
-        .eq("machine_id", machineId)
-        .order("created_at", { ascending: true });
+  const fetchBookings = async () => {
+    const { data, error } = await supabase
+      .from("bookings")
+      .select("*")
+      .eq("machine_id", machineId)
+      .order("created_at", { ascending: true });
 
-      if (error) console.error("Error fetching bookings:", error);
-      else {
-        // Ensure only one booking is marked as active
-        const sortedBookings = data.map((booking, index) => ({
-          ...booking,
-          status: index === 0 ? "active" : "pending",
-        }));
-        setBookings((prevBookings) => ({
-          ...prevBookings,
-          [machineId]: sortedBookings,
-        }));
-      }
-    };
+    if (error) console.error("Error fetching bookings:", error);
+    else {
+      // Ensure only one booking is marked as active
+      const sortedBookings = data.map((booking, index) => ({
+        ...booking,
+        status: index === 0 ? "active" : "pending",
+      }));
+      setBookings((prevBookings) => ({
+        ...prevBookings,
+        [machineId]: sortedBookings,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    // const fetchBookings = async () => {
+    //   const { data, error } = await supabase
+    //     .from("bookings")
+    //     .select("*")
+    //     .eq("machine_id", machineId)
+    //     .order("created_at", { ascending: true });
+
+    //   if (error) console.error("Error fetching bookings:", error);
+    //   else {
+    //     // Ensure only one booking is marked as active
+    //     const sortedBookings = data.map((booking, index) => ({
+    //       ...booking,
+    //       status: index === 0 ? "active" : "pending",
+    //     }));
+    //     setBookings((prevBookings) => ({
+    //       ...prevBookings,
+    //       [machineId]: sortedBookings,
+    //     }));
+    //   }
+    // };
 
     fetchBookings();
-  }, [machineId, setBookings, triggerFetch]);
+  }, [triggerFetch, machineId, setBookings]);
 
   const updateNextBookingToActive = useCallback(async () => {
     const sortedBookings = [...bookings[machineId]].sort(
@@ -94,6 +116,7 @@ const Bookings = ({ machineId }) => {
 
   const handleDeleteBooking = useCallback(
     async (bookingId) => {
+      setIsLoading(true);
       if (bookingId === null) {
         return;
       }
@@ -112,12 +135,16 @@ const Bookings = ({ machineId }) => {
           return updatedBookings;
         });
         updateNextBookingToActive(); // Update the next booking to be active
+        setIsLoading(false);
       }
+      fetchBookings();
     },
+
     [machineId, setBookings, updateNextBookingToActive]
   );
 
   useEffect(() => {
+    if (isLoading) return;
     const activeBooking = bookings[machineId]?.find(
       (booking) => booking.status === "active"
     );
@@ -128,7 +155,7 @@ const Bookings = ({ machineId }) => {
       setActiveBookingRemainingTime(null);
       setActiveBookingId(null);
     }
-  }, [bookings, machineId, activeBookingId]);
+  }, [bookings, machineId, activeBookingId, isLoading]);
 
   useEffect(() => {
     const updateRemainingTimeInDb = async (bookingId, newRemainingTime) => {
@@ -166,17 +193,19 @@ const Bookings = ({ machineId }) => {
   return (
     <>
       <div className={style.booking_list}>
-        {bookings[machineId]?.length > 0 ? (
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : bookings[machineId]?.length > 0 ? (
           <div className={style.user_booking}>
             <h2>{bookings[machineId][0].user_name}</h2>
             <p>Time remaining: {formatDuration(activeBookingRemainingTime)}</p>
             <div className={style.booking_buttons}>
-            <button
-              data-booking-id={bookings[machineId][0].id}
-              onClick={() => openDeleteModal(bookings[machineId][0])}
-            >
-              <FaRegTrashCan />
-            </button>
+              <button
+                data-booking-id={bookings[machineId][0].id}
+                onClick={() => openDeleteModal(bookings[machineId][0])}
+              >
+                <FaRegTrashCan />
+              </button>
             </div>
           </div>
         ) : (
