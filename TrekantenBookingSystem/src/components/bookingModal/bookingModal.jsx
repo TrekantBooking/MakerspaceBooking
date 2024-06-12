@@ -27,7 +27,7 @@ const Modal = ({ show, onClose, onSubmit, selectedMachine }) => {
             value={user_name}
             onChange={(e) => setUser_name(e.target.value)}
             required
-            placeholder="Username"
+            placeholder="Enter Your Name"
             className={style.username_input}
           />
           <input
@@ -35,7 +35,7 @@ const Modal = ({ show, onClose, onSubmit, selectedMachine }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="Secret Key"
+            placeholder="Choose a password"
             className={style.password_input}
           />
           <label htmlFor="quantity" className={style.quantity_label}>
@@ -54,7 +54,7 @@ const Modal = ({ show, onClose, onSubmit, selectedMachine }) => {
           </button>
         </form>
         <button className={style.close_button} type="button" onClick={onClose}>
-        <IoMdClose />
+          <IoMdClose />
         </button>
       </div>
     </div>

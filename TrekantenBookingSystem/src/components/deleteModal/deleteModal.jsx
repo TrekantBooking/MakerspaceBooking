@@ -26,11 +26,11 @@ const DeleteModal = ({ show, onClose, onSubmit, booking }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="Secret Key"
+            placeholder="Enter Password"
           />
           <button className={style.submit_button} type="submit">Delete</button>
           <button className={style.close_button} type="button" onClick={onClose}>
-          <IoMdClose />
+            <IoMdClose />
           </button>
         </form>
       </div>
