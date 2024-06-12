@@ -197,7 +197,7 @@ const Bookings = ({ machineId }) => {
           <div className={style.user_booking_active}>
             <h3 onClick={() => setShowQueueModal(true)}>Show Queue</h3>
             <p>
-              <span>{bookings[machineId].length - 1} people </span>
+              <span>{bookings[machineId].length - 1} {bookings[machineId].length - 1 === 1 ? 'person' : 'people'} </span>
               <span>
                 | {" "}
                 {formatDuration(
