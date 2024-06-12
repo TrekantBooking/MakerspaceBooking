@@ -3,6 +3,7 @@ import style from "./bookings.module.scss";
 import { createClient } from "@supabase/supabase-js";
 import PropTypes from "prop-types";
 import DeleteModal from "../deleteModal/deleteModal";
+import QueueModal from "../showQueue/showQueue"
 import { MyContext } from "../../Providers/ContextProvider";
 import { FaRegTrashCan } from "react-icons/fa6";
 
@@ -25,6 +26,7 @@ const Bookings = ({ machineId }) => {
     bookings[machineId]?.length || 0
   );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showQueueModal, setShowQueueModal] = useState(false); // State for Queue Modal
   const [isLoading, setIsLoading] = useState(false);
 
   const [activeBookingRemainingTime, setActiveBookingRemainingTime] =
@@ -62,27 +64,6 @@ const Bookings = ({ machineId }) => {
   };
 
   useEffect(() => {
-    // const fetchBookings = async () => {
-    //   const { data, error } = await supabase
-    //     .from("bookings")
-    //     .select("*")
-    //     .eq("machine_id", machineId)
-    //     .order("created_at", { ascending: true });
-
-    //   if (error) console.error("Error fetching bookings:", error);
-    //   else {
-    //     // Ensure only one booking is marked as active
-    //     const sortedBookings = data.map((booking, index) => ({
-    //       ...booking,
-    //       status: index === 0 ? "active" : "pending",
-    //     }));
-    //     setBookings((prevBookings) => ({
-    //       ...prevBookings,
-    //       [machineId]: sortedBookings,
-    //     }));
-    //   }
-    // };
-
     fetchBookings();
   }, [triggerFetch, machineId, setBookings]);
 
@@ -139,7 +120,6 @@ const Bookings = ({ machineId }) => {
       }
       fetchBookings();
     },
-
     [machineId, setBookings, updateNextBookingToActive]
   );
 
@@ -196,7 +176,7 @@ const Bookings = ({ machineId }) => {
         {isLoading ? (
           <div>Loading...</div>
         ) : bookings[machineId]?.length > 0 ? (
-          <div className={style.user_booking}>
+          <div className={style.user_booking_active}>
             <h2>{bookings[machineId][0].user_name}</h2>
             <p>Time remaining: {formatDuration(activeBookingRemainingTime)}</p>
             <div className={style.booking_buttons}>
@@ -209,24 +189,27 @@ const Bookings = ({ machineId }) => {
             </div>
           </div>
         ) : (
-          <div className={style.user_booking}>
+          <div className={style.user_booking_inactive}>
             <h2>No active bookings</h2>
           </div>
         )}
         {bookings[machineId]?.length > 1 ? (
-          <div className={style.user_booking}>
-            <h3>{bookings[machineId].length - 1} people in queue</h3>
+          <div className={style.user_booking_active}>
+            <h3 onClick={() => setShowQueueModal(true)}>Show Queue</h3>
             <p>
-              Total queue time:{" "}
-              {formatDuration(
-                bookings[machineId]
-                  .slice(1)
-                  .reduce((total, booking) => total + booking.duration, 0)
-              )}
+              <span>{bookings[machineId].length - 1} people </span>
+              <span>
+                | {" "}
+                {formatDuration(
+                  bookings[machineId]
+                    .slice(1)
+                    .reduce((total, booking) => total + booking.duration, 0)
+                )}
+              </span>
             </p>
           </div>
         ) : (
-          <div className={style.user_booking}>
+          <div className={style.user_booking_inactive}>
             <h2>No people in queue</h2>
           </div>
         )}
@@ -241,6 +224,12 @@ const Bookings = ({ machineId }) => {
           booking={selectedBooking}
         />
       )}
+      <QueueModal
+        show={showQueueModal}
+        onClose={() => setShowQueueModal(false)}
+        bookings={bookings[machineId]?.slice(1) || []}
+        formatDuration={formatDuration}
+      />
     </>
   );
 };
