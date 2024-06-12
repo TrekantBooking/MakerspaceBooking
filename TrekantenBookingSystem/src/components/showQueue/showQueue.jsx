@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import style from "./showQueue.module.scss";
 
-const QueueModal = ({ show, onClose, bookings, formatDuration }) => {
+const QueueModal = ({ show, onClose, bookings, formatDuration, openDeleteModal, machineId }) => {
   if (!show) {
     return null;
   }
@@ -19,6 +19,7 @@ const QueueModal = ({ show, onClose, bookings, formatDuration }) => {
             <li>
               <h3>{booking.user_name}</h3>
               <span>In queue | {formatDuration(booking.duration)}</span>
+              <button onClick={() => openDeleteModal(booking.id)}>Delete</button>
             </li>
         </ul>
           ))}

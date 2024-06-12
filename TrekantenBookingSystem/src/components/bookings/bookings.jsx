@@ -229,6 +229,8 @@ const Bookings = ({ machineId }) => {
         onClose={() => setShowQueueModal(false)}
         bookings={bookings[machineId]?.slice(1) || []}
         formatDuration={formatDuration}
+        openDeleteModal={openDeleteModal}
+        machineId={machine.id.toString()}
       />
     </>
   );
