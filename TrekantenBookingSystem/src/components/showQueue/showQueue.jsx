@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import style from "./showQueue.module.scss";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { IoMdClose } from "react-icons/io";
 
 const QueueModal = ({ show, onClose, bookings, formatDuration, openDeleteModal, machineId }) => {
   if (!show) {
@@ -12,15 +14,14 @@ const QueueModal = ({ show, onClose, bookings, formatDuration, openDeleteModal, 
       <div className={style.modalContent}>
         <h2>Queue for Machine</h2>
         <button className={style.close_button} onClick={onClose}>
-          Close
+        <IoMdClose />
         </button>
         {bookings.map((booking, index) => (
           <ul className={style.queueList} key={booking.id}>
             <li>
               <h3>{booking.user_name}</h3>
               <span>In queue | {formatDuration(booking.duration)}</span>
-              {console.log(booking)}
-              <button onClick={() => openDeleteModal(booking)}>Delete</button>
+              <button onClick={() => openDeleteModal(booking)}><FaRegTrashCan /></button>
             </li>
           </ul>
         ))}

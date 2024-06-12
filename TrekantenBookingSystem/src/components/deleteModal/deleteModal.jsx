@@ -1,5 +1,6 @@
 import { useState } from "react";
 import style from "./deleteModal.module.scss";
+import { IoMdClose } from "react-icons/io";
 
 const DeleteModal = ({ show, onClose, onSubmit, booking }) => {
   const [password, setPassword] = useState("");
@@ -29,7 +30,7 @@ const DeleteModal = ({ show, onClose, onSubmit, booking }) => {
           />
           <button className={style.submit_button} type="submit">Delete</button>
           <button className={style.close_button} type="button" onClick={onClose}>
-            Close
+          <IoMdClose />
           </button>
         </form>
       </div>

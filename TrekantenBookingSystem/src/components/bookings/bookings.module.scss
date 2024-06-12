@@ -15,6 +15,7 @@
 
     h3 {
       font-weight: 600;
+      font-size: 1.1rem;
       cursor: pointer;
     }
     p {
@@ -39,14 +40,18 @@
     padding: 5px 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     position: relative;
-    background-color: #ffeecb;
+    border: 1px solid #FFAA00;
     width: 200px;
     height: 65px;
     margin-bottom: 10px;
     text-align: center;
     border-radius: 10px;
+
+    h2 {
+      font-size: 1rem;
+    }
 
     h3 {
       font-weight: 600;

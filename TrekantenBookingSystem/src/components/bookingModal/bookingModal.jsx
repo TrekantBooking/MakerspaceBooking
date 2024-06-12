@@ -1,5 +1,6 @@
 import { useState } from "react";
 import style from "./bookingModal.module.scss";
+import { IoMdClose } from "react-icons/io";
 
 const Modal = ({ show, onClose, onSubmit, selectedMachine }) => {
   const [user_name, setUser_name] = useState("");
@@ -52,8 +53,8 @@ const Modal = ({ show, onClose, onSubmit, selectedMachine }) => {
             Book
           </button>
         </form>
-        <button className={style.delete_button} type="button" onClick={onClose}>
-          Close
+        <button className={style.close_button} type="button" onClick={onClose}>
+        <IoMdClose />
         </button>
       </div>
     </div>
