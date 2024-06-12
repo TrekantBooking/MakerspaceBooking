@@ -230,7 +230,7 @@ const Bookings = ({ machineId }) => {
         bookings={bookings[machineId]?.slice(1) || []}
         formatDuration={formatDuration}
         openDeleteModal={openDeleteModal}
-        machineId={machine.id.toString()}
+        machineId={machineId}
       />
     </>
   );

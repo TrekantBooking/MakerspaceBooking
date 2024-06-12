@@ -14,15 +14,16 @@ const QueueModal = ({ show, onClose, bookings, formatDuration, openDeleteModal, 
         <button className={style.close_button} onClick={onClose}>
           Close
         </button>
-          {bookings.map((booking, index) => (
-        <ul className={style.queueList} key={booking.id}>
+        {bookings.map((booking, index) => (
+          <ul className={style.queueList} key={booking.id}>
             <li>
               <h3>{booking.user_name}</h3>
               <span>In queue | {formatDuration(booking.duration)}</span>
-              <button onClick={() => openDeleteModal(booking.id)}>Delete</button>
+              {console.log(booking)}
+              <button onClick={() => openDeleteModal(booking)}>Delete</button>
             </li>
-        </ul>
-          ))}
+          </ul>
+        ))}
       </div>
     </div>
   );
@@ -33,7 +34,7 @@ QueueModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   bookings: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
       user_name: PropTypes.string.isRequired,
       duration: PropTypes.number.isRequired,
     })
