@@ -16,11 +16,11 @@
     align-items: center;
     position: relative;
     background: white;
-    padding: 40px 20px;
+    padding: 30px 20px;
     border-radius: 10px;
     width: 406px;
     height: 300px;
-    overflow-y: scroll;
+
 
     h2 {
       text-transform: uppercase;
@@ -37,6 +37,12 @@
       cursor: pointer;
     }
 
+    .scrollableList {
+      overflow-y: auto;
+      height: 200px;
+
+    }
+
     .queueList {
       position: relative;
       display: flex;
@@ -45,11 +51,12 @@
       justify-content: center;
       list-style: none;
       padding: 0;
-      margin: 20px 0 0;
+      margin: 10px 0 0;
       border-radius: 10px;
       background-color: #ffeecb;
       width: 210px;
       height: 70px;
+
 
       li {
         height: 70px;
@@ -72,4 +79,8 @@
       color: #ffaa00;
     }
   }
+}
+
+.scrollableList::-webkit-scrollbar {
+  display: none;
 }

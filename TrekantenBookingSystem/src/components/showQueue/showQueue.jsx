@@ -14,17 +14,19 @@ const QueueModal = ({ show, onClose, bookings, formatDuration, openDeleteModal, 
       <div className={style.modalContent}>
         <h2>Queue for Machine</h2>
         <button className={style.close_button} onClick={onClose}>
-        <IoMdClose />
+          <IoMdClose />
         </button>
-        {bookings.map((booking, index) => (
-          <ul className={style.queueList} key={booking.id}>
-            <li>
-              <h3>{booking.user_name}</h3>
-              <span>In queue | {formatDuration(booking.duration)}</span>
-              <button onClick={() => openDeleteModal(booking)}><FaRegTrashCan /></button>
-            </li>
-          </ul>
-        ))}
+        <div className={style.scrollableList}>
+          {bookings.map((booking, index) => (
+            <ul className={style.queueList} key={booking.id}>
+              <li>
+                <h3>{booking.user_name}</h3>
+                <span>In queue | {formatDuration(booking.duration)}</span>
+                <button onClick={() => openDeleteModal(booking)}><FaRegTrashCan /></button>
+              </li>
+            </ul>
+          ))}
+        </div>
       </div>
     </div>
   );
