@@ -14,8 +14,9 @@
     position: relative;
     background: white;
     padding: 20px;
-    border-radius: 8px;
-    width: 300px;
+    border-radius: 10px;
+    width: 406px;
+    height: 300px;
 
     .modal_header {
       h2 {
@@ -61,7 +62,7 @@
       background-color: transparent;
       font-size: 1.7rem;
       border: none;
-  cursor: pointer;
-}
+      cursor: pointer;
+    }
   }
 }

@@ -139,11 +139,11 @@ const Bookings = ({ machineId }) => {
 
   useEffect(() => {
     const updateRemainingTimeInDb = async (bookingId, newRemainingTime) => {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("bookings")
         .update({ duration: newRemainingTime })
         .eq("id", bookingId);
-
+      console.log(data);
       if (error) console.error("Error updating booking duration:", error);
     };
 

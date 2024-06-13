@@ -17,8 +17,10 @@
     position: relative;
     background: white;
     padding: 40px 20px;
-    border-radius: 8px;
-    width: 300px;
+    border-radius: 10px;
+    width: 406px;
+    height: 300px;
+    overflow-y: scroll;
 
     h2 {
       text-transform: uppercase;
@@ -48,6 +50,15 @@
       background-color: #ffeecb;
       width: 210px;
       height: 70px;
+
+      li {
+        height: 70px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+      }
     }
 
     button {
