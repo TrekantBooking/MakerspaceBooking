@@ -1,15 +1,17 @@
-import style from "./App.module.scss";
-import Machines from "./components/machines/machines";
-import logo from "./assets/Makerspace.png";
+
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import BookingPage from "./pages/BookingPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
     <>
-      <div className={style.heading}>
-        <img src={logo} alt="makerspace" />
-        <h1>Book en maskine </h1>
-      </div>
-      <Machines />
+      <Router>
+        <Routes>
+          <Route path="/" element={<BookingPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </Router>
     </>
   );
 }
